@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/aboutus">About Us</a>&nbsp;&nbsp;&nbsp;
+        <a href="/contactus">Contact Us</a>&nbsp;&nbsp;&nbsp;
+        <a href="/contactslist">Contacts List</a>
+        <h1>List of contacts</h1>
+        <table border="2">
+            <thead>
+                <tr>
+                    <th onclick="sortBy('fullname')">Full Name</th>
+                    <th>Mobile Number</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="d1">
+
+            </tbody>
+        </table>
+        <script>
+            var contactslist; 
+            fetch("http://localhost:3500/getallcontacts")
+            .then(res=>res.json())
+            .then(data=>{
+                console.log(data)
+                contactslist = data
+                genUI(contactslist)
+                
+            })
+            function sortBy(fullname){
+                contactslist.sort(function(a,b){
+                    if(a[fullname]<b[fullname]){
+                        return -1;
+                    }
+                    if(a[fullname]>b[fullname]){
+                        return 1;
+                    }
+                    return 0;
+                })
+                genUI(contactslist)
+            }
+
+
+            function genUI(data){
+                document.getElementById("d1").innerHTML=""
+                data.forEach(function(contact,index){
+                    var nrw = document.createElement("tr")
+                    var ntd = document.createElement("td")
+                    ntd.innerHTML=contact.fullname
+                    var mtd = document.createElement("td")
+                    mtd.innerHTML=contact.mobile
+                    var btd = document.createElement("button")
+                    btd.innerHTML = "Delete"
+                    btd.onclick=function(){
+                        data.splice(index,1)
+                        genUI(contactslist)
+                    }
+                    nrw.appendChild(ntd)
+                    nrw.appendChild(mtd)
+                    nrw.appendChild(btd)
+                    document.getElementById("d1").appendChild(nrw)
+                    
+                })
+            }
+
+            
+        </script>
+</body>
+</html>
